@@ -188,6 +188,16 @@ Run the build command for Android pointing to the `preview` profile:
 eas build --platform android --profile preview
 ```
 
+> [!IMPORTANT]
+> **React 19 Peer Dependency Troubleshooting:**
+> Since this project runs on **React 19** and uses several packages built for React 18 (e.g. `lucide-react-native`, `@gluestack-ui/core`), `npm ci` may fail during the cloud build with an `ERESOLVE` peer dependency mismatch error.
+> 
+> To resolve this automatically, we have created an `.npmrc` file at the root of the project with:
+> ```ini
+> legacy-peer-deps=true
+> ```
+> This forces the Expo EAS Cloud build server to ignore the strict peer dependency checks and install successfully without any compilation errors.
+
 #### What happens during the build:
 1. EAS CLI uploads the project configuration to the Expo cloud build servers.
 2. It will ask if you want to generate a keystore (Android signing credentials). Select **Yes** to let Expo handle it automatically.
