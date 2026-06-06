@@ -1,263 +1,266 @@
 # 🌤️ Tenki — WeatherAI Mobile Companion
 
-Tenki is a premium, personal outdoor companion mobile application built with **React Native** and **Expo SDK 56**. Instead of acting as a generic, cold weather widget, Tenki acts as a friendly companion answering simple, kid-friendly questions: *Can I go outside? Do I need my umbrella? When is the best time for my activities?*
+Tenki is a premium, personal outdoor companion mobile application built with **React Native** and **Expo SDK 56**. It integrates with the **WeatherAI REST API** (`https://api.weather-ai.co`) for weather forecasts, custom tree canopy analytics, and usage billing.
 
-It integrates seamlessly with the **WeatherAI REST API** (`https://api.weather-ai.co`) for weather forecasts, custom tree canopy analytics, and usage billing.
+This documentation describes **how the WeatherAI API is consumed** and provides a **step-by-step guide to exporting the app as an installable Android APK**.
 
 ---
 
 ## 📖 Table of Contents
-1. [Core Features & Screen Mapping](#-core-features--screen-mapping)
-2. [Product Philosophy & Design System](#-product-philosophy--design-system)
-3. [Architecture & Data Flow](#-architecture--data-flow)
-4. [State Management (Zustand)](#-state-management-zustand)
-5. [API Clients & Endpoints](#-api-clients--endpoints)
-6. [Caching & Offline Strategy](#-caching--offline-strategy)
-7. [Getting Started & Installation](#-getting-started--installation)
-8. [Native Deployment & EAS Builds](#-native-deployment--eas-builds)
-9. [Project Structure](#-project-structure)
+1. [WeatherAI API Integration Guide](#-weatherai-api-integration-guide)
+   - [Authentication](#authentication)
+   - [API Client (Axios)](#api-client-axios)
+   - [Endpoint Consumption & Parameters](#endpoint-consumption--parameters)
+   - [Caching & Offline Architecture](#caching--offline-architecture)
+   - [Error Normalization & Fail-safes](#error-normalization--fail-safes)
+2. [How to Build & Export as an Installable APK](#-how-to-build--export-as-an-installable-apk)
+   - [Step 1: Install EAS CLI](#step-1-install-eas-cli)
+   - [Step 2: Configure Android Package in `app.json`](#step-2-configure-android-package-in-appjson)
+   - [Step 3: Create EAS Build Configuration (`eas.json`)](#step-3-create-eas-build-configuration-easjson)
+   - [Step 4: Login & Initialize EAS](#step-4-login--initialize-eas)
+   - [Step 5: Run the APK Build](#step-5-run-the-apk-build)
+   - [Step 6: Install the APK on Your Device](#step-6-install-the-apk-on-your-device)
+3. [Architecture & State Management](#-architecture--state-management)
+4. [Developer Setup & Local Running](#-developer-setup--local-running)
+5. [Project Directory Structure](#-project-directory-structure)
 
 ---
 
-## 📱 Core Features & Screen Mapping
+## 🔌 WeatherAI API Integration Guide
 
-### 1. The Interactive Onboarding Flow
-Tenki guides new users through a fully structured, multi-step onboarding wizard to personalize their experience. The state is tracked via the `onboardingStore` and persisted using AsyncStorage.
-* **Get Started Screen:** An aesthetic splash page with full-bleed moody imagery and call-to-action buttons.
-* **Intro Slides (3 Slides):** Friendly swipeable slides detailing the product values.
-* **Google Authentication Stub:** A secure authentication page that logs users in and establishes credentials.
-* **Activities Screen:** A 2-column Pinterest-style interactive selector allowing users to highlight outdoor hobbies (Hiking, Farming, Running, Cycling, etc.). Selecting a card toggles a solid white focus border.
-* **Notifications Screen:** Set channel alerts preferences (Email, SMS, or WhatsApp).
-* **Update Frequency Screen:** Choose how often the companion updates details (Daily, Weekly, Monthly).
-* **Plan Pricing Screen:** Highlight options between Free, Pro, and Farm tiers.
-* **Saved Locations Manager:** An interactive setup screen to search for and default primary coordinates (Home, Work, or Custom).
-* **Welcome Screen:** Greets the user personally by name and displays their preferences summary.
-* **Success Animation Screen:** Plays a congratulatory fade-in-down checkmark when setup completes, unlocking the tab bar.
+Tenki utilizes the WeatherAI REST API for weather data, geolocation fallback, tree analysis, and quota tracking.
 
-### 2. Today Screen (Home Dashboard)
-Provides instant outdoor status checks alongside visual grids:
-* **Location Resolution (useLocation hook):** Attempts to fetch current coordinates using `expo-location`. If denied, it uses `/v1/weather-geo?ip=auto` IP lookup fallback automatically.
-* **Weather-Responsive Hero:** Loads dynamic background images matching the current weather condition code (Clear, Cloudy, Rainy, Stormy, Snow).
-* **Umbrella Warning Hint:** Warns users to bring an umbrella if the rain chance is high (> 50%) within the next 12 hours.
-* **Outdoor Status Banner:** Derives status thresholds using a rules engine (`src/utils/outdoorStatus.ts`):
-  * `Ready` (Comfortable range, no rain in 6h)
-  * `Caution` (Rain expected in 12h or moderate winds)
-  * `Stay inside` (Severe storm alerts, heavy downpours, or AI-noted floods)
-* **Best Outdoor Window:** Analyzes the hourly forecast to detect longest consecutive dry streaks for field or outdoor tasks.
-* **2x2 Metrics Grid:** Renders visual cards with HSL-tinted circles (Temperature, Humidity, Wind speed, Atmospheric pressure).
-* **Interactive Tabs Switcher:** Quickly toggle between Hourly, 10 Days, and Monthly forecast projections.
-* **Rain Chance Probability Bars:** Horizontal progress indicators displaying precipitation likelihood.
-* **Sunrise & Sunset Cards:** Display solar events mapped with smooth icons.
-* **AI Summary Panel:** Renders Gemini AI summaries generated dynamically from the weather parameters.
-
-### 3. Forecast Screen
-Provides a deeper look into the climate patterns:
-* **Hourly Carousel:** Horizontal scrolling list of hourly temperatures, rain chances, and conditions for the next 24 hours.
-* **Daily Forecast:** Vertical scroll list showing minimum and maximum temp limits with custom icons.
-* **Metric/Imperial Unit Selector:** Toggle between Celsius (°C) and Fahrenheit (°F) instantly. Triggers a store update and re-caches data.
-
-### 4. Alerts & Reminders Screen
-Configure customized triggers based on local weather predictions:
-* **5 Alert Channels:** Toggles for Rain, Floods, Wind, Frost, and Dry Windows.
-* **Lead Time Selector:** Cycle through notifications timings (`now`, `15min`, `30min`, `1hour`, `2hour`, `6hour`, `1day`).
-* **Haptics:** Selection feedback fires when toggling options.
-* **Trigger History:** Maintains a local database of the last 50 alerts triggered by weather criteria.
-
-### 5. Trees & Canopy Screen (Forestry Care)
-A specialized tool for farm management and canopy health:
-* **Camera & Gallery Picker:** Takes a photo or picks from the library via `expo-image-picker`.
-* **Multipart Image Analysis:** Sends files to `/v1/trees/analyze` with farm acres, notes, and local region details.
-* **Analysis Display:** Shows total tree count, canopy density %, health summary (Healthy vs Needs Care vs Replacement), and original alongside annotated visual overlays.
-* **Analyses History List:** Loads historical records with cursor-based pagination. Tapping a row opens a details screen.
-
-### 6. Usage Quotas Screen
-Tracks WeatherAI plan bounds:
-* Visual progress bars representing standard API calls, AI reports, and forestry submissions.
-* Displays subscription limits, reset calendar dates, and warning levels.
-
-### 7. API Lab Screen
-A playground containing 12 live experimental features (e.g. Twin Cities, Travel Mode, Swahili Weather Briefs). Allows testing raw API behaviors and bookmarking favorites.
-
----
-
-## 🎨 Product Philosophy & Design System
-
-Tenki is built upon modern aesthetic tokens (`src/theme/tokens.ts` & `typography.ts`).
-
-### Color Hierarchy
-* **Root Background:** `#0B0B0E` (Deep charcoal dark theme first)
-* **Surface Cards:** `#1C1C22` (Elevated blocks with `#2A2A32` subtle borders)
-* **Primary Accents:** `#8B5CF6` (Violet pill headers and buttons)
-* **Status Badges:** 
-  * Ready: `#34D399` (Soft Green tint)
-  * Caution: `#FBBF24` (Amber Amber)
-  * Stay in: `#F87171` (Danger Red)
-* **Fixed Metric Icons:** Fixed colored circles (12% opacity) mapping to metrics.
-
-### Typography Scales
-* **Hero Text:** `28px` bold, line height `34`
-* **Section Titles:** `17px` semi-bold, line height `24`
-* **Metric Text:** `32px` bold, line height `38`
-* **Body / Captions:** `16px` / `13px` weights
-
----
-
-## 🏗️ Architecture & Data Flow
-
-Tenki adopts a clean, layered front-end structure:
-
-```
-┌────────────────────────────────────────────────────────┐
-│                        UI LAYER                        │
-│   TodayScreen  │  ForecastScreen  │  OnboardingWizard  │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                      LOGIC LAYER                       │
-│              useWeather  │  useLocation                │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                      STATE LAYER                       │
-│        Zustand Stores (Hydrated via AsyncStorage)      │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                     NETWORK LAYER                      │
-│        Axios Client with interceptors and errors       │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-               HTTPS (https://api.weather-ai.co)
+### Authentication
+All API requests require a WeatherAI bearer key, set in your `.env` file as `EXPO_PUBLIC_WEATHER_AI_API_KEY`.
+The Axios client automatically fetches this token and appends it to request headers:
+```typescript
+axiosClient.interceptors.request.use((config) => {
+  const key = getApiKey();
+  config.headers.Authorization = `Bearer ${key}`;
+  return config;
+});
 ```
 
----
-
-## 🗃️ State Management (Zustand)
-
-Zustand stores maintain real-time application values and state synchronization:
-1. **`weatherStore`:** Manages current temperatures, 7-day daily models, 24h forecasts, measurement units (metric vs imperial), loading states, and error alerts.
-2. **`treesStore`:** Handles photo uploading, forestry calculations, history caching, and pagination cursors.
-3. **`locationStore`:** Caches current latitude/longitude coordinate numbers and city labels.
-4. **`remindersStore`:** Toggles alerts, lead times, and alert histories. Uses Zustand's persist middleware with `AsyncStorage`.
-5. **`onboardingStore`:** Directs onboarding completion progress, selected plans, update frequencies, and locations setup.
-6. **`authStore` / `labStore`:** Coordinates Google user credentials and API lab test features.
+### API Client (Axios)
+Located at `src/api/client.ts`, the client exposes typed wrappers for common HTTP request structures:
+* `get<T>(path, params)` — Query endpoints with params.
+* `postForm<T>(path, formData)` — Post multipart data (image uploads).
 
 ---
 
-## 🔌 API Clients & Endpoints
+### Endpoint Consumption & Parameters
 
-Tenki calls the WeatherAI REST endpoints using a preconfigured Axios client (`src/api/client.ts`).
+#### 1. Weather Forecasts (`/v1/weather`)
+Used on both the **Today (Home)** screen and the **Forecast** screen to fetch weather conditions.
+* **Parameters passed:**
+  * `lat` / `lon` (float): Geographic coordinates of location.
+  * `days` (int): Number of days of forecast needed (e.g., `1` for TodayScreen, `7` for ForecastScreen).
+  * `units` (`'metric'` | `'imperial'`): Toggle metric scale.
+  * `ai` (boolean): `true` on TodayScreen to fetch Gemini AI weather summaries; `false` on forecast screens to preserve API quota.
+* **UI Mapping:**
+  * Maps response `current` variables to temperature, wind speed, pressure, and UV index.
+  * Maps response `hourly` array to 24h cards and dry/wet window calculators.
+  * Maps response `daily` array to 7-day high/low temperature lists.
 
-### Request Interceptor
-* Automatically retrieves the API key and appends the header: `Authorization: Bearer EXPO_PUBLIC_WEATHER_AI_API_KEY`.
+#### 2. IP Geolocation Lookup (`/v1/weather-geo`)
+Used as an automatic fallback if a user denies location permissions on startup.
+* **Parameters passed:** `ip=auto` and `ai=false`.
+* **Behavior:** Resolves the user's latitude and longitude from their IP address, allowing Tenki to display local weather updates seamlessly.
 
-### Response & Error Interceptor
-Intercepts network errors and maps them to clean user-friendly descriptions:
-* **`401`** ➔ *Invalid API key. Check your env setup.*
-* **`403`** ➔ *This feature is not available on your plan.*
-* **`429`** ➔ *Monthly quota exceeded. Try again after reset.*
-* **`500` / `503`** ➔ *Server error. Please try again.*
-* **`ERR_NETWORK` / Offline** ➔ *Network error. Check your connection.*
+#### 3. Tree Canopy Image Analysis (`/v1/trees/analyze`)
+Enables forestry canopy health tracking on the **Trees Screen**.
+* **Request Format:** `multipart/form-data`
+* **Fields Sent:**
+  * `image` (binary): The selected image file.
+  * `farmerId` / `county` / `landAcres` / `location` / `notes` (optional metadata).
+* **Response Mapping:**
+  * `tree_count`: Total number of trees detected in the photo.
+  * `canopy_coverage_percentage`: Density of canopy.
+  * `health_breakdown` (`healthy`, `needs_care`, `needs_replacement`).
+  * `overlay_image_url`: Annotated overlay image from WeatherAI.
+  * `ai_analysis`: A detailed bulleted list of observations and recommendations.
+
+#### 4. Tree Analysis History (`/v1/trees/history`)
+Lists previous analyses on the **History Screen**.
+* **Parameters passed:** `limit` (max records per page, e.g., 20) and `cursor` (pagination offset token).
+* **Behavior:** Supports endless scrolling through historical logs.
+
+#### 5. Quotas & Limits (`/v1/usage` & `/v1/trees/quota`)
+Displayed on the **Usage Screen** to render real-time progress bars tracking request balances.
+* **Behavior:** Fetches billing period limits, remaining credits, and monthly reset dates.
 
 ---
 
-## 💾 Caching & Offline Strategy
+### Caching & Offline Architecture
+To conserve the WeatherAI free plan limits (1,000 requests/mo, 200 AI summaries/mo, 5 tree uploads/mo), Tenki implements an AsyncStorage-backed cache (`src/utils/cache.ts`).
 
-To prevent unnecessary API bill charges, Tenki implements a Time-To-Live (TTL) cache system utilizing AsyncStorage (`src/utils/cache.ts`).
+Each data type is assigned a strict **Time-To-Live (TTL)**:
+* **Current Weather:** **10 minutes**
+* **Daily Forecast:** **30 minutes**
+* **Hourly Forecast:** **15 minutes**
+* **Usage Quotas:** **5 minutes**
+* **Tree Analyses:** **Indefinite** (stored locally)
 
-| Data Type | Cache TTL Duration | Offline Treatment |
-|---|---|---|
-| **Current Weather** | 10 Minutes | Falls back to cached data, displays banner |
-| **Daily Forecast** | 30 Minutes | Falls back to cached data |
-| **Hourly Forecast** | 15 Minutes | Falls back to cached data |
-| **Usage stats** | 5 Minutes | Shows last retrieved numbers |
-| **Tree Analyses** | Indefinite | Cached locally for quick view |
+**Offline Behavior:** When a network call fails, Tenki intercepts the error and retrieves the last cached entry from AsyncStorage, ensuring the app remains usable offline.
 
 ---
 
-## 🚀 Getting Started & Installation
+### Error Normalization & Fail-safes
+The Axios response interceptor intercepts raw HTTP error codes and returns human-friendly responses:
+* **401:** `"Invalid API key. Check your .env configuration."`
+* **403:** `"This feature is not available on your plan."`
+* **429:** `"Monthly quota exceeded. Try again after reset."`
+* **500 / 503:** `"Server error. Please try again."`
+* **Network Failures:** `"Network error. Check your connection."`
 
-### Prerequisites
-* Install Node.js v20 or newer.
-* Install the [Expo Go](https://expo.dev/go) application on your mobile device.
+---
 
-### Setup Steps
-1. **Clone the Repository:**
+## 📦 How to Build & Export as an Installable APK
+
+To build an installable Android Application Package (APK) for testing on physical devices or sharing, use **Expo Application Services (EAS)**.
+
+### Step 1: Install EAS CLI
+Install the EAS command-line tools globally on your development machine:
+```bash
+npm install -g eas-cli
+```
+
+### Step 2: Configure Android Package in `app.json`
+Open `app.json` in the root of the project and define a unique package identifier inside the `android` configuration object:
+```json
+{
+  "expo": {
+    "name": "tenki",
+    "slug": "tenki",
+    "version": "1.0.0",
+    "android": {
+      "package": "com.oliver.tenki",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png"
+      }
+    }
+  }
+}
+```
+
+### Step 3: Create EAS Build Configuration (`eas.json`)
+Create a file named `eas.json` in the root directory. This configures EAS to build an installable `.apk` file (distribution format) rather than a `.aab` file (which is intended for Google Play Store upload):
+
+```json
+{
+  "cli": {
+    "version": ">= 9.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
+```
+
+### Step 4: Login & Initialize EAS
+1. **Login** to your Expo Account (sign up at [expo.dev](https://expo.dev) if you don't have one):
    ```bash
-   git clone <repo-url>
-   cd tenki
+   eas login
+   ```
+2. **Initialize** EAS inside your project directory:
+   ```bash
+   eas project:init
    ```
 
-2. **Install Package Dependencies:**
+### Step 5: Run the APK Build
+Run the build command for Android pointing to the `preview` profile:
+```bash
+eas build --platform android --profile preview
+```
+
+#### What happens during the build:
+1. EAS CLI uploads the project configuration to the Expo cloud build servers.
+2. It will ask if you want to generate a keystore (Android signing credentials). Select **Yes** to let Expo handle it automatically.
+3. The build gets queued on Expo's remote servers. You can safely close your terminal; the build process continues in the cloud.
+
+---
+
+### Step 6: Install the APK on Your Device
+Once the build completes (usually takes 5–10 minutes):
+1. The terminal will display a **QR Code** and a **Direct Download Link**.
+2. **Scan the QR Code** with your Android device or copy the download link into your phone's browser.
+3. Download the `.apk` file.
+4. **Allow Installation from Unknown Sources:**
+   * Go to Android **Settings** ➔ **Apps** ➔ **Special app access** ➔ **Install unknown apps**.
+   * Toggle permissions for your browser (Chrome/Firefox) or File Manager.
+5. Open the downloaded `.apk` file and tap **Install** to enjoy Tenki!
+
+---
+
+## 🏗️ Architecture & State Management
+
+Tenki utilizes a decoupled, state-driven model utilizing **Zustand** stores for lightweight reactivity and persistence:
+* **`weatherStore.ts`**: Coordinates active weather data, unit systems, and fetching actions.
+* **`treesStore.ts`**: Manages uploaded tree counts, canopy statistics, and history pagination.
+* **`remindersStore.ts`**: Toggles alerts (rain, flood, wind, frost) and lead times, persisting updates using `AsyncStorage`.
+* **`onboardingStore.ts`**: Controls wizard slides progress and location coordinate caches.
+* **`authStore.ts`**: Stub authentication state.
+
+---
+
+## 🚀 Developer Setup & Local Running
+
+1. **Install Dependencies:**
    ```bash
    npm install
    ```
-
-3. **Configure Environment Variables:**
-   Create a `.env` file at the root:
-   ```bash
-   touch .env
-   ```
-   Add your API key inside `.env`:
+2. **Configure Variables:**
+   Create a `.env` file in the root directory containing your WeatherAI token:
    ```env
-   EXPO_PUBLIC_WEATHER_AI_API_KEY=wai_your_secret_api_key_here
+   EXPO_PUBLIC_WEATHER_AI_API_KEY=wai_your_api_key_here
    ```
-   *Note: Environment variables are prefixed with `EXPO_PUBLIC_` to be loaded correctly in Expo configurations.*
-
-4. **Launch Dev Server:**
+3. **Run Dev server:**
    ```bash
    npx expo start -c
    ```
-   *Scan the generated QR code using your mobile device's camera or Expo Go application.*
+   *Press `a` to run on an Android emulator or scan the QR code using the **Expo Go** application on your physical device.*
 
 ---
 
-## 📦 Native Deployment & EAS Builds
-
-Tenki uses Expo Application Services (EAS) to compile native Android applications.
-
-### APK Preview Build
-To compile a test preview build:
-```bash
-npx eas build --platform android --profile preview
-```
-
-### Production Build
-To prepare a final release build:
-```bash
-npx eas build --platform android --profile production
-```
-
----
-
-## 📂 Project Structure
+## 📂 Project Directory Structure
 
 ```
 tenki/
-├── assets/                     # App media assets & images
-│   ├── icons/                  # Custom icons
-│   └── images/                 # Onboarding & weather hero backgrounds
+├── assets/                     # App icons & onboarding hero assets
 ├── src/
-│   ├── api/                    # Axios client & endpoints
-│   │   ├── client.ts           # Interceptors & normalization
+│   ├── api/                    # Axios client and endpoint modules
+│   │   ├── client.ts           # Bearer token interceptor and errors
 │   │   ├── weather.ts          # Forecast endpoints
-│   │   ├── trees.ts            # Forestry endpoints
-│   │   └── account.ts          # Usage queries
-│   ├── components/             # Reusable UI component elements
-│   │   ├── ui/                 # Design tokens and widgets
-│   │   └── shared/             # Tab Bar, custom page headers
-│   ├── hooks/                  # Custom React hooks (useLocation, useWeather)
-│   ├── navigation/             # Tab and stack navigator structures
-│   ├── screens/                # Core screens
-│   │   ├── onboarding/         # Onboarding Wizard screens
+│   │   └── trees.ts            # Forestry analysis endpoints
+│   ├── components/             # Reusable UI component modules
+│   │   ├── ui/                 # Design system components
+│   │   └── shared/             # Tab Bar & headers
+│   ├── hooks/                  # Geolocation and weather lifecycle hooks
+│   ├── navigation/             # Bottom tab & screen stacks
+│   ├── screens/                # User dashboard screens
+│   │   ├── onboarding/         # Onboarding walkthrough pages
 │   │   ├── TodayScreen.tsx     # Home page dashboard
-│   │   ├── ForecastScreen.tsx  # Extended weather views
-│   │   └── TreesScreen.tsx     # Canopy upload manager
-│   ├── store/                  # Zustand state managers
-│   ├── theme/                  # Color and text tokens
-│   └── utils/                  # Cache engine, haptic tools, helpers
-├── App.tsx                     # Main app launch script
-├── app.json                    # Expo config specifications
-├── tailwind.config.js          # Tailwind CSS settings
-└── tsconfig.json               # TypeScript rules config
+│   │   └── TreesScreen.tsx     # Canopy manager
+│   ├── store/                  # Zustand state stores
+│   ├── theme/                  # Theme colors and typography tokens
+│   └── utils/                  # Cache engine and calculations
+├── App.tsx                     # Entry point
+├── app.json                    # Expo configuration
+├── eas.json                    # EAS build settings (configures APK outputs)
+└── tailwind.config.js          # Styling configurations
 ```
