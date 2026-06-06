@@ -274,3 +274,18 @@ tenki/
 ├── eas.json                    # EAS build settings (configures APK outputs)
 └── tailwind.config.js          # Styling configurations
 ```
+
+---
+
+## 📱 Screenshots
+
+The app features a modern dark theme with a card-based layout and personalized weather insights:
+
+| Screen | Description |
+|--------|-------------|
+| **Today** | Main dashboard showing current weather status ("Grab your umbrella!", outdoor readiness), best window for outdoor activities, and 4-tile metric layout (wind speed, rain chance, pressure, UV index). Also displays hourly forecast and sunrise/sunset times. |
+| **Forecast** | Calendar view of June with daily forecasts, daily high/low temperature graph, hourly breakdown, and rain probability timeline. Swipe between months for extended forecast. |
+| **Alerts** | Customizable weather reminders with toggle switches for rain, heavy rain/floods, strong wind, cold mornings, and dry window notifications. Each reminder shows configurable lead time. |
+| **Farm & Trees** | Tree canopy analysis interface for forestry tracking. Upload farm images via camera or gallery with optional fields (Farmer ID, County, Notes). Displays tree count, canopy coverage %, health breakdown, and AI observations. |
+| **Settings & Usage** | Account information (plan type, reset date), API quota dashboard (standard requests, AI summaries, tree analyses), and theme preferences. Shows real-time usage tracking. |
+| **API Lab** | Developer sandbox for experimenting with WeatherAI endpoints. Features pre-built use cases like "Week at a Glance", "Travel Mode (IP)", "Rain Window", and "Golden Hour Pick" with cost indicators. |
