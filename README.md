@@ -2,27 +2,34 @@
 
 Tenki is a premium, personal outdoor companion mobile application built with **React Native** and **Expo SDK 56**. It integrates with the **WeatherAI REST API** (`https://api.weather-ai.co`) for weather forecasts, custom tree canopy analytics, and usage billing.
 
-This documentation describes **how the WeatherAI API is consumed** and provides a **step-by-step guide to exporting the app as an installable Android APK**.
+This documentation describes **how the WeatherAI API is consumed** and provides **step-by-step guides to building installable APK and iOS apps**.
+
+## 📲 Download Built Apps
+
+- **iOS Simulator Build:** [Download v1.0.0](https://github.com/oliver-kandagor/tenki/releases/tag/IOS) — Ready-to-run `.app` for Mac iOS Simulator
+- **Android APK:** See [EAS Build Guide](#-how-to-build--export-as-an-installable-apk) below for instructions
 
 ---
 
 ## 📖 Table of Contents
-1. [WeatherAI API Integration Guide](#-weatherai-api-integration-guide)
+1. [Download Built Apps](#-download-built-apps)
+2. [WeatherAI API Integration Guide](#-weatherai-api-integration-guide)
    - [Authentication](#authentication)
    - [API Client (Axios)](#api-client-axios)
    - [Endpoint Consumption & Parameters](#endpoint-consumption--parameters)
    - [Caching & Offline Architecture](#caching--offline-architecture)
    - [Error Normalization & Fail-safes](#error-normalization--fail-safes)
-2. [How to Build & Export as an Installable APK](#-how-to-build--export-as-an-installable-apk)
+3. [How to Build & Export as an Installable APK](#-how-to-build--export-as-an-installable-apk)
    - [Step 1: Install EAS CLI](#step-1-install-eas-cli)
    - [Step 2: Configure Android Package in `app.json`](#step-2-configure-android-package-in-appjson)
    - [Step 3: Create EAS Build Configuration (`eas.json`)](#step-3-create-eas-build-configuration-easjson)
    - [Step 4: Login & Initialize EAS](#step-4-login--initialize-eas)
    - [Step 5: Run the APK Build](#step-5-run-the-apk-build)
    - [Step 6: Install the APK on Your Device](#step-6-install-the-apk-on-your-device)
-3. [Architecture & State Management](#-architecture--state-management)
-4. [Developer Setup & Local Running](#-developer-setup--local-running)
-5. [Project Directory Structure](#-project-directory-structure)
+4. [Architecture & State Management](#-architecture--state-management)
+5. [Developer Setup & Local Running](#-developer-setup--local-running)
+6. [Project Directory Structure](#-project-directory-structure)
+7. [Screenshots](#-screenshots)
 
 ---
 
