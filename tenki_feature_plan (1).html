@@ -1,0 +1,462 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin: 2rem 0 0.75rem; }
+.section-title:first-child { margin-top: 0; }
+
+/* Plan badge */
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; }
+.badge-free { background: #EAF3DE; color: #3B6D11; }
+.badge-pro  { background: #EEEDFE; color: #3C3489; }
+.badge-scale{ background: #FAEEDA; color: #633806; }
+@media (prefers-color-scheme: dark) {
+  .badge-free  { background: #27500A; color: #C0DD97; }
+  .badge-pro   { background: #3C3489; color: #CECBF6; }
+  .badge-scale { background: #633806; color: #FAC775; }
+}
+
+/* Tab bar */
+.tabs { display: flex; gap: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1.25rem; }
+.tab { font-size: 13px; padding: 6px 12px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--color-text-secondary); user-select: none; }
+.tab.active { color: var(--color-text-primary); border-bottom-color: #8B5CF6; font-weight: 500; }
+
+/* Feature card */
+.feature-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 10px;
+}
+.fc-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.fc-icon { font-size: 18px; color: var(--color-text-secondary); margin-top: 1px; flex-shrink: 0; }
+.fc-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.fc-sub { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 8px; }
+.fc-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fc-api { font-size: 11px; font-family: var(--font-mono); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; padding: 2px 6px; color: var(--color-text-secondary); }
+.fc-api.pro { background: #EEEDFE; color: #534AB7; border-color: #AFA9EC; }
+@media (prefers-color-scheme: dark) {
+  .fc-api.pro { background: #26215C; color: #CECBF6; border-color: #534AB7; }
+}
+.fc-problem { font-size: 12px; color: var(--color-text-tertiary); margin-top: 6px; border-left: 2px solid var(--color-border-secondary); padding-left: 8px; line-height: 1.5; }
+
+/* Screen layout grid */
+.screen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.screen-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+.screen-header { padding: 8px 12px; font-size: 12px; font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 6px; }
+.screen-body { padding: 8px 12px; }
+.screen-item { font-size: 12px; color: var(--color-text-secondary); padding: 3px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.screen-item:last-child { border-bottom: none; }
+
+/* API map */
+.api-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.api-row:last-child { border-bottom: none; }
+.api-method { font-size: 10px; font-weight: 500; width: 32px; text-align: center; padding: 2px 4px; border-radius: 3px; background: var(--color-background-info); color: var(--color-text-info); flex-shrink: 0; }
+.api-endpoint { font-size: 12px; font-family: var(--font-mono); color: var(--color-text-primary); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.api-screen { font-size: 11px; color: var(--color-text-secondary); text-align: right; flex-shrink: 0; max-width: 140px; }
+
+/* Plan comparison */
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.plan-col { }
+.plan-head { padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; font-weight: 500; }
+.plan-head.pro-col { background: #EEEDFE; color: #3C3489; }
+.plan-head.scale-col { background: #FAEEDA; color: #633806; }
+@media (prefers-color-scheme: dark) {
+  .plan-head.pro-col { background: #26215C; color: #CECBF6; }
+  .plan-head.scale-col { background: #412402; color: #FAC775; }
+}
+.plan-row { padding: 7px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px; }
+.plan-row:last-child { border-bottom: none; }
+.plan-row + .plan-row { border-left: none; }
+.plan-col + .plan-col .plan-row { border-left: 0.5px solid var(--color-border-tertiary); }
+.chk { color: #3B6D11; font-size: 13px; }
+.cross { color: var(--color-text-tertiary); font-size: 13px; }
+
+/* Content panels */
+.panel { display: none; }
+.panel.active { display: block; }
+
+h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Tenki app feature plan: features, API mapping, screen layout, and plan tiers</h2>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('features')">Features</div>
+  <div class="tab" onclick="showTab('screens')">Screen layout</div>
+  <div class="tab" onclick="showTab('apis')">API map</div>
+  <div class="tab" onclick="showTab('plans')">Free vs Pro vs Scale</div>
+</div>
+
+<!-- FEATURES PANEL -->
+<div id="features" class="panel active">
+
+<div class="section-title">Core (all plans)</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-map-pin fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Auto-location on first launch</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">Detects the user's city via IP on first open. No permission prompt needed — fallback to GPS after onboarding.</div>
+  <div class="fc-meta">
+    <span class="fc-api">GET /v1/ip-lookup?ip=auto</span>
+    <span class="fc-api">GET /v1/weather?lat&lon</span>
+  </div>
+  <div class="fc-problem">Solves: "I don't know my exact coordinates." First weather shown in under 2 seconds, zero friction.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-sun fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Live weather + 7-day forecast</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">Hero card with current temp, condition, feels-like. Hourly scroll + 7-day area chart below. Sunrise/sunset tiles. Chance-of-rain progress bars for evening hours.</div>
+  <div class="fc-meta">
+    <span class="fc-api">GET /v1/weather?days=7&ai=false</span>
+    <span class="fc-api">GET /v1/hourly</span>
+    <span class="fc-api">GET /v1/daily</span>
+  </div>
+  <div class="fc-problem">Solves: the core product promise — accurate, glanceable weather for everyday decisions (carry an umbrella? go to market today?).</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-current-location fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Multi-city location cards</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">Save up to 5 cities. Each card shows local time, temp, wind, AQI badge. Pull-to-refresh updates all in parallel via <code>Promise.all</code>.</div>
+  <div class="fc-meta">
+    <span class="fc-api">GET /v1/weather (per city, parallel)</span>
+  </div>
+  <div class="fc-problem">Solves: checking weather for family in other counties, planning inter-city travel (e.g. Nanyuki → Nairobi day trip).</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-calendar-stats fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Monthly weather calendar</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">react-native-calendars grid showing a weather emoji per day based on dominant condition. Tap a date to see a mini daily summary. Useful for planning events weeks ahead.</div>
+  <div class="fc-meta">
+    <span class="fc-api">GET /v1/daily?days=7</span>
+    <span class="fc-api">(Pro: /v1/forecast14)</span>
+  </div>
+  <div class="fc-problem">Solves: "Is there a good window to plant next month?" — free users get 7 days in the calendar, Pro unlocks 14.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-wifi-off fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Offline mode + MMKV cache</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">All weather responses cached with TTL (current: 5 min, daily: 1 hr). When offline, stale data is shown with a soft "Cached data" banner. Background refreshes skip AI summaries with <code>?ai=false</code> to preserve quota.</div>
+  <div class="fc-meta">
+    <span class="fc-api">ai=false on background refresh</span>
+  </div>
+  <div class="fc-problem">Solves: patchy data connectivity in rural areas like Laikipia — the app stays useful even with no signal.</div>
+</div>
+
+<div class="section-title">Pro features</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-brain fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">AI weather insight card</div>
+      <span class="badge badge-pro">Pro</span>
+    </div>
+  </div>
+  <div class="fc-sub">Gemini-powered summary card on the home screen below the forecast chart. Shows agronomic context (good day to spray? harvesting risk?), risk flags, and actionable advice in plain language. Supports Swahili (<code>lang=sw</code>) for East African users.</div>
+  <div class="fc-meta">
+    <span class="fc-api pro">GET /v1/insights (Pro+)</span>
+  </div>
+  <div class="fc-problem">Solves: raw numbers don't tell farmers what to do — this card translates humidity/wind/UV into a daily action plan.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-calendar-month fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">14-day extended forecast</div>
+      <span class="badge badge-pro">Pro</span>
+    </div>
+  </div>
+  <div class="fc-sub">Unlocks a "14 Days" tab on the forecast switcher. Collapsible day rows with condition, high/low, rain probability. Calendar grid expands to fill two weeks.</div>
+  <div class="fc-meta">
+    <span class="fc-api pro">GET /v1/forecast14 (Pro+)</span>
+  </div>
+  <div class="fc-problem">Solves: planning market days, livestock movement, or planting schedules that need a two-week horizon — the 7-day window isn't enough.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-bell-ringing fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Weather webhooks (rain alerts)</div>
+      <span class="badge badge-pro">Pro</span>
+    </div>
+  </div>
+  <div class="fc-sub">UI to register up to 10 webhook endpoints or push-notification targets. WeatherAI POSTs when rain/frost/wind conditions are met at saved coordinates. Settings tab shows active webhooks with a toggle per trigger type.</div>
+  <div class="fc-meta">
+    <span class="fc-api pro">POST /v1/webhooks</span>
+    <span class="fc-api pro">GET /v1/webhooks</span>
+    <span class="fc-api pro">DEL /v1/webhooks/:id</span>
+  </div>
+  <div class="fc-problem">Solves: farmers can't watch the app all day — push a rain warning to their phone or SMS relay before it's too late to cover crops.</div>
+</div>
+
+<div class="section-title">Scale features</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-trees fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Forestry & tree analysis (Farmer Mode)</div>
+      <span class="badge badge-scale">Scale</span>
+    </div>
+  </div>
+  <div class="fc-sub">FAB (leaf icon) on Weather tab opens the Forestry sheet. Upload a drone/satellite farm image. Returns annotated overlay, tree count, density/acre, canopy %, health breakdown (healthy / needs care / replacement), and Gemini agronomic recommendations. History of past analyses stored in Firestore.</div>
+  <div class="fc-meta">
+    <span class="fc-api">POST /v1/trees/analyze (multipart)</span>
+    <span class="fc-api">GET /v1/trees/history</span>
+    <span class="fc-api">GET /v1/trees/quota</span>
+  </div>
+  <div class="fc-problem">Solves: farmers have no affordable way to assess tree/canopy health across large plots. A single drone pass + Tenki gives a full agronomic health report in under a minute.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-message-2 fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">SMS weather alerts (Bomet programme)</div>
+      <span class="badge badge-scale">Scale + approval</span>
+    </div>
+  </div>
+  <div class="fc-sub">Register farmers into the Bomet Agricultural Alert System. Daily SMS with condition summary and actionable advice. Admins can send targeted alerts (drought, frost, extreme wind) via predefined templates. Opt-in required. SMS stats dashboard in the admin settings panel.</div>
+  <div class="fc-meta">
+    <span class="fc-api">POST /v1/sms/bomet/register</span>
+    <span class="fc-api">POST /v1/sms/alert</span>
+    <span class="fc-api">GET /v1/sms/stats</span>
+    <span class="fc-api">GET /v1/sms/health</span>
+  </div>
+  <div class="fc-problem">Solves: smallholder farmers without smartphones still need weather alerts — SMS reaches feature phones with no data plan.</div>
+</div>
+
+<div class="feature-card">
+  <div class="fc-header">
+    <i class="ti ti-map-2 fc-icon" aria-hidden="true"></i>
+    <div>
+      <div class="fc-title">Maps tab with nearby weather pins</div>
+      <span class="badge badge-free">Free</span>
+    </div>
+  </div>
+  <div class="fc-sub">Full-screen dark map (react-native-maps). Pins for nearby cities from <code>/v1/weather-geo</code>. Tapping a pin opens a bottom sheet with a quick 3-day forecast. Search bar overlaid at top.</div>
+  <div class="fc-meta">
+    <span class="fc-api">GET /v1/weather-geo?ip=auto</span>
+  </div>
+  <div class="fc-problem">Solves: spatial awareness — see at a glance whether the rain is coming from the west or if Nairobi is clear when Nanyuki is overcast.</div>
+</div>
+
+</div>
+
+<!-- SCREENS PANEL -->
+<div id="screens" class="panel">
+<div class="section-title">Tab layout</div>
+<div class="screen-grid">
+
+  <div class="screen-card">
+    <div class="screen-header"><i class="ti ti-sun" aria-hidden="true"></i> Weather (home)</div>
+    <div class="screen-body">
+      <div class="screen-item"><span>Hero: city, temp, condition</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Tab: Hourly / 10 Days / Monthly</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Hourly scroll + area chart</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Rain chance bars</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Sunrise / sunset tiles</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>AI insight card</span><span class="badge badge-pro">Pro</span></div>
+      <div class="screen-item"><span>14-day list tab</span><span class="badge badge-pro">Pro</span></div>
+      <div class="screen-item"><span>Forestry FAB (leaf)</span><span class="badge badge-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <div class="screen-card">
+    <div class="screen-header"><i class="ti ti-current-location" aria-hidden="true"></i> Locations</div>
+    <div class="screen-body">
+      <div class="screen-item"><span>Search + voice input</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>City cards (temp, AQI, wind)</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Pull-to-refresh (parallel)</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Primary city pin</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Long-press → delete</span><span class="badge badge-free">all</span></div>
+    </div>
+  </div>
+
+  <div class="screen-card">
+    <div class="screen-header"><i class="ti ti-map-2" aria-hidden="true"></i> Maps</div>
+    <div class="screen-body">
+      <div class="screen-item"><span>Dark full-screen map</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Nearby weather pins</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Search overlay</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Pin → bottom sheet</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>3-day forecast in sheet</span><span class="badge badge-free">all</span></div>
+    </div>
+  </div>
+
+  <div class="screen-card">
+    <div class="screen-header"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
+    <div class="screen-body">
+      <div class="screen-item"><span>Units, language (en/sw)</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Dark / light theme</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Plan & usage bar</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Upgrade CTA (Paystack)</span><span class="badge badge-free">all</span></div>
+      <div class="screen-item"><span>Webhook manager</span><span class="badge badge-pro">Pro</span></div>
+      <div class="screen-item"><span>SMS opt-in / stats</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Cancel subscription</span><span class="badge badge-pro">Pro+</span></div>
+    </div>
+  </div>
+
+  <div class="screen-card">
+    <div class="screen-header"><i class="ti ti-trees" aria-hidden="true"></i> Forestry sheet (FAB)</div>
+    <div class="screen-body">
+      <div class="screen-item"><span>Image picker (camera/gallery)</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Metadata form</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Upload + analyze</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Overlay image result</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Health donut + stats</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>AI recommendations</span><span class="badge badge-scale">Scale</span></div>
+      <div class="screen-item"><span>Analysis history list</span><span class="badge badge-scale">Scale</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-title">Locked feature treatment</div>
+<div class="feature-card">
+  <div class="fc-sub">Free users see Pro/Scale features with a soft purple <strong>lock overlay</strong> and an "Upgrade" banner. Tapping calls <code>getPaystackConfig()</code> Firebase callable and opens an in-app Paystack payment sheet. No hard walls — locked features are visible but inactive, which creates pull without frustration.</div>
+</div>
+</div>
+
+<!-- API MAP PANEL -->
+<div id="apis" class="panel">
+<div class="section-title">Every API call and where it's used</div>
+<div class="feature-card" style="padding: 0.75rem 1.25rem;">
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/ip-lookup?ip=auto</span><span class="api-screen">First launch auto-locate</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/weather?lat&lon&days=7&ai=true</span><span class="api-screen">Home hero + chart</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/hourly?lat&lon</span><span class="api-screen">Hourly scroll cards</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/daily?lat&lon</span><span class="api-screen">Day forecast rows</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/forecast14 (Pro)</span><span class="api-screen">14 Days tab</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/insights (Pro)</span><span class="api-screen">AI insight card</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/weather-geo?ip=auto</span><span class="api-screen">Maps tab pins</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/weather (×N, parallel)</span><span class="api-screen">Location cards</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/usage</span><span class="api-screen">Settings usage bar</span></div>
+  <div class="api-row"><span class="api-method">POST</span><span class="api-endpoint">/v1/webhooks</span><span class="api-screen">Settings → add webhook</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/webhooks</span><span class="api-screen">Settings → webhook list</span></div>
+  <div class="api-row"><span class="api-method">DEL</span><span class="api-endpoint">/v1/webhooks/:id</span><span class="api-screen">Settings → delete webhook</span></div>
+  <div class="api-row"><span class="api-method">POST</span><span class="api-endpoint">/v1/trees/analyze</span><span class="api-screen">Forestry → upload</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/trees/history</span><span class="api-screen">Forestry → past analyses</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/trees/quota</span><span class="api-screen">Forestry quota badge</span></div>
+  <div class="api-row"><span class="api-method">POST</span><span class="api-endpoint">/v1/sms/bomet/register</span><span class="api-screen">SMS farmer enrol</span></div>
+  <div class="api-row"><span class="api-method">POST</span><span class="api-endpoint">/v1/sms/alert</span><span class="api-screen">Admin: send alert blast</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/sms/stats</span><span class="api-screen">SMS dashboard</span></div>
+  <div class="api-row"><span class="api-method">GET</span><span class="api-endpoint">/v1/sms/health</span><span class="api-screen">SMS gateway status dot</span></div>
+  <div class="api-row"><span class="api-method">FN</span><span class="api-endpoint">getPaystackConfig()</span><span class="api-screen">Upgrade flow</span></div>
+  <div class="api-row"><span class="api-method">FN</span><span class="api-endpoint">cancelSubscription()</span><span class="api-screen">Settings → cancel</span></div>
+  <div class="api-row"><span class="api-method">FN</span><span class="api-endpoint">requestSmsAccess()</span><span class="api-screen">SMS compliance form</span></div>
+</div>
+
+<div class="section-title">AI quota guard</div>
+<div class="feature-card">
+  <div class="fc-sub">Background refreshes always append <code>?ai=false</code> to preserve AI request quota. AI is only called on foreground open and explicit "refresh" taps. Free plan gets 200 AI calls/month — the guard keeps the insight card available all month without burning quota on silent refreshes.</div>
+</div>
+</div>
+
+<!-- PLANS PANEL -->
+<div id="plans" class="panel">
+<div class="section-title">What each plan unlocks</div>
+<div class="plan-grid">
+  <div class="plan-col">
+    <div class="plan-head">Free · 1K req/mo</div>
+    <div class="plan-row"><span class="chk">✓</span> Live weather</div>
+    <div class="plan-row"><span class="chk">✓</span> 7-day forecast</div>
+    <div class="plan-row"><span class="chk">✓</span> Hourly scroll</div>
+    <div class="plan-row"><span class="chk">✓</span> 5 saved cities</div>
+    <div class="plan-row"><span class="chk">✓</span> Maps tab</div>
+    <div class="plan-row"><span class="chk">✓</span> Monthly calendar (7d)</div>
+    <div class="plan-row"><span class="chk">✓</span> Offline cache</div>
+    <div class="plan-row"><span class="chk">✓</span> Dark/light theme</div>
+    <div class="plan-row"><span class="chk">✓</span> Swahili UI</div>
+    <div class="plan-row"><span class="chk">✓</span> 200 AI calls/mo</div>
+    <div class="plan-row"><span class="cross">—</span> AI insight card</div>
+    <div class="plan-row"><span class="cross">—</span> 14-day forecast</div>
+    <div class="plan-row"><span class="cross">—</span> Webhooks</div>
+    <div class="plan-row"><span class="cross">—</span> Forestry analysis</div>
+    <div class="plan-row"><span class="cross">—</span> SMS alerts</div>
+  </div>
+  <div class="plan-col">
+    <div class="plan-head pro-col">Pro · 50K req/mo</div>
+    <div class="plan-row"><span class="chk">✓</span> All Free features</div>
+    <div class="plan-row"><span class="chk">✓</span> AI insight card</div>
+    <div class="plan-row"><span class="chk">✓</span> 14-day forecast tab</div>
+    <div class="plan-row"><span class="chk">✓</span> Calendar extends to 14d</div>
+    <div class="plan-row"><span class="chk">✓</span> Up to 10 webhooks</div>
+    <div class="plan-row"><span class="chk">✓</span> Rain/frost/wind alerts</div>
+    <div class="plan-row"><span class="chk">✓</span> 10K AI calls/mo</div>
+    <div class="plan-row"><span class="chk">✓</span> 5 team seats</div>
+    <div class="plan-row"><span class="cross">—</span> Forestry analysis</div>
+    <div class="plan-row"><span class="cross">—</span> SMS alerts</div>
+    <div class="plan-row"><span class="cross">—</span> 16-day forecast</div>
+  </div>
+  <div class="plan-col">
+    <div class="plan-head scale-col">Scale · 500K req/mo</div>
+    <div class="plan-row"><span class="chk">✓</span> All Pro features</div>
+    <div class="plan-row"><span class="chk">✓</span> Forestry analysis (unlimited)</div>
+    <div class="plan-row"><span class="chk">✓</span> Tree health overlay images</div>
+    <div class="plan-row"><span class="chk">✓</span> 16-day forecast</div>
+    <div class="plan-row"><span class="chk">✓</span> Up to 50 webhooks</div>
+    <div class="plan-row"><span class="chk">✓</span> 100K AI calls/mo</div>
+    <div class="plan-row"><span class="chk">✓</span> 20 team seats</div>
+    <div class="plan-row"><span class="chk">✓</span> SMS alerts (approval req.)</div>
+    <div class="plan-row"><span class="chk">✓</span> Bomet farmer enrol</div>
+    <div class="plan-row"><span class="chk">✓</span> SMS delivery stats</div>
+    <div class="plan-row"><span class="chk">✓</span> Gateway health monitor</div>
+  </div>
+</div>
+
+<div class="section-title">Upgrade flow</div>
+<div class="feature-card">
+  <div class="fc-sub">Locked features show a purple "Upgrade" banner. Tapping calls the <code>getPaystackConfig()</code> Firebase callable, gets the public key + plan prices (KES 2,500 Pro / KES 9,500 Scale), then opens a Paystack payment sheet in-app. On success, the plan badge in Settings updates and locked features unlock immediately without an app restart.</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

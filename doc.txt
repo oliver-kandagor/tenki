@@ -1,0 +1,257 @@
+Weather
+AI
+API v1 · DOCS Back to weather-ai.co
+Overview
+Introduction
+Authentication
+Plans & Limits
+Error Codes
+Weather
+GET
+/v1/weather
+GET
+/v1/forecast
+GET
+/v1/current
+GET
+/v1/daily
+GET
+/v1/hourly
+GET
+/v1/forecast14
+PRO+
+GET
+/v1/insights
+PRO+
+GET
+/v1/weather-geo
+GET
+/v1/ip-lookup
+PRO+
+Account
+GET
+/v1/usage
+Webhooks PRO+
+POST
+/v1/webhooks
+GET
+/v1/webhooks
+DEL
+/v1/webhooks/:id
+SMS / USSD SCALE
+POST
+/v1/sms/send
+POST
+/v1/sms/alert
+POST
+/v1/sms/bomet/register
+GET
+/v1/sms/stats
+GET
+/v1/sms/health
+Trees / Forestry
+POST
+/v1/trees/analyze
+GET
+/v1/trees/history
+GET
+/v1/trees/quota
+POST
+/v1/forestry/count-trees
+Billing Callables
+FN
+cancelSubscription
+FN
+requestSmsAccess
+FN
+contactSales
+FN
+getPaystackConfig
+BASE URL
+https://api.weather-ai.co
+API Key
+wai_••••••••••••••••
+Developer Reference
+WeatherAI API
+Documentation
+Real-time and forecast weather data with AI-generated summaries, SMS/USSD delivery, webhook subscriptions, and usage analytics — all behind a single REST API.
+
+Free — 1K req/mo
+Pro — 50K req/mo
+Scale — 500K req/mo + SMS
+Setup
+Authentication
+Every request must include your API key as a Bearer token. Keys are prefixed wai_ and scoped to your plan.
+
+ℹ
+Generate keys from Dashboard → API Keys. Keys are SHA-256 hashed before storage — the plaintext is only shown once on creation.
+HTTP Header
+Copy
+Authorization: Bearer wai_<your_api_key>
+cURL
+Copy
+curl https://api.weather-ai.co/v1/weather?lat=-1.2921&lon=36.8219 \
+  -H "Authorization: Bearer wai_your_key_here"
+JavaScript
+Copy
+const res = await fetch(
+  'https://api.weather-ai.co/v1/weather?lat=-1.2921&lon=36.8219',
+  { headers: { Authorization: 'Bearer wai_your_key_here' } }
+);
+const data = await res.json();
+Billing
+Plans & Rate Limits
+Limits reset on a 30-day rolling period from subscription date, not calendar month.
+
+Plan	Requests/mo	AI Requests/mo	Forecast days	Webhooks	SMS/USSD	Team seats
+Free	1,000	200	7	✕	✕	1
+Pro	50,000	10,000	14	✓ up to 10	✕	5
+Scale	500,000	100,000	16	✓ up to 50	✓ approval req.	20
+⚠
+Add ?ai=false to skip Gemini AI summaries and preserve your AI quota.
+Rate Limit Headers
+X-RateLimit-Limit:     50000      # monthly cap
+X-RateLimit-Remaining: 49987      # requests remaining
+X-RateLimit-Reset:     1717977600 # unix epoch reset time
+Reference
+Error Codes
+Status	Meaning	Common cause
+401	Unauthorized	Missing, malformed, or revoked API key
+403	Forbidden	Plan doesn't include this feature; SMS not yet enabled
+429	Too Many Requests	Monthly quota exceeded — check X-RateLimit-Reset
+400	Bad Request	Missing required parameters
+500	Internal Error	Server-side issue — retry with exponential backoff
+503	Service Unavailable	Database unreachable — fail-closed for SMS gates
+Weather Endpoints
+Weather API
+Fetch current conditions and multi-day forecasts by coordinates. Gemini AI summaries included by default.
+
+Query Parameters
+Param	Type	Req	Description
+lat	float	required	Latitude e.g. -1.2921
+lon	float	required	Longitude e.g. 36.8219
+days	integer	optional	Forecast days (1–7 Free, 1–14 Pro, 1–16 Scale). Default: 7
+ai	boolean	optional	Include AI summary. Default: true
+units	string	optional	metric (°C) or imperial (°F). Default: metric
+lang	string	optional	Language code for AI summary e.g. en, sw. Default: en
+⚡ TRY IT
+key from top bar
+lat
+-1.2921
+lon
+36.8219
+days
+3
+ai
+
+true
+units
+
+metric
+
+▶ Send Request
+Account
+Usage & Quota
+Returns request counts, AI request counts, plan limits, and billing period start/end. No query parameters.
+
+⚡ TRY IT
+
+▶ Send Request
+Webhooks
+Webhooks PRO+
+Subscribe to weather trigger events. WeatherAI POSTs to your URL when conditions are met.
+
+SMS / USSD
+SMS API SCALE ONLY
+Programmatic SMS delivery and farmer registration. Requires Scale plan + admin compliance approval.
+
+⚠
+SMS routes require (1) Scale plan and (2) smsEnabled = true on your account — set by admin after compliance review. Submit documents via Billing panel → Request SMS Access. Until approved, calls return 403 SMS_NOT_ENABLED.
+Agroforestry
+Trees & Forestry API
+Upload drone, aerial, or satellite images to automatically count tree crowns, assess canopy health, and get agronomic recommendations — powered by OpenCV computer vision and Gemini AI.
+
+Plan	Analyses / month	CV engine	Overlay image	Gemini context
+Free	5	✓	✓	✓
+Pro	100	✓	✓	✓
+Scale	Unlimited	✓	✓	✓
+Upload a farm image (drone, aerial, satellite) as multipart/form-data. Returns tree count, density, health breakdown, an annotated overlay image, and Gemini-powered agronomic observations.
+
+Form Fields
+Field	Type	Req	Description
+image	file	required	JPEG, PNG, or WEBP — max 20 MB
+farmerId	string	optional	Your farmer / plot identifier — echoed in response
+county	string	optional	County or region — provides context for Gemini
+landAcres	float	optional	Plot size in acres — enables tree_density_per_acre
+location	string	optional	Human-readable farm name or GPS description
+notes	string	optional	Extra context for Gemini e.g. "Tea plantation, recently pruned"
+cURL Example
+Copy
+curl -X POST https://api.weather-ai.co/v1/trees/analyze \
+  -H "Authorization: Bearer wai_your_key" \
+  -F "image=@/path/to/farm.jpg" \
+  -F "farmerId=F-001" \
+  -F "county=Bomet" \
+  -F "landAcres=2.5" \
+  -F "notes=Tea plantation"
+Response 200
+{
+  "analysis_id":           "Kx8mP2qRvTnZ",
+  "timestamp":             "2026-06-01T09:15:00.000Z",
+  "farmer_id":             "F-001",
+  "county":                "Bomet",
+  "location":              "Kapkimolwa Farm, Block C",
+  "land_acres":            2.5,
+  "total_tree_count":      84,
+  "tree_density_per_acre": 33.6,
+  "confidence_score":      0.87,
+  "canopy_coverage_pct":   41.2,
+  "tree_health": {
+    "healthy":             68,
+    "needs_care":          12,
+    "needs_replacement":    4
+  },
+  "low_confidence":        false,
+  "tree_species_guess":    "Tea (Camellia sinensis)",
+  "observations": [
+    "Dense canopy in northern quadrant — possible over-crowding",
+    "3 trees near water source show yellowing — likely waterlogging"
+  ],
+  "recommendations": [
+    "Consider thinning northern section to improve light penetration",
+    "Improve drainage around water source trees"
+  ],
+  "original_image_url":    "https://storage.googleapis.com/…/original.jpg",
+  "overlay_image_url":     "https://storage.googleapis.com/…/overlay.jpg",
+  "cv_debug": {
+    "orig_resolution": "4000x3000",
+    "work_resolution": "1500x1125",
+    "canopy_px":       412500,
+    "peaks_detected":  91,
+    "after_area_filter": 84
+  }
+}
+⚡ TRY IT — Image Upload
+multipart/form-data
+Drop a farm image here or click to browse
+JPEG · PNG · WEBP · max 20 MB
+farmerId
+F-001 (optional)
+county
+Bomet (optional)
+landAcres
+2.5 (optional)
+location
+Farm name or GPS (optional)
+notes
+Tea plantation, recently pruned…
+
+▶ Analyze Image
+Firebase Callable Functions
+Billing Functions
+These are Firebase HTTPS callable functions invoked via the Firebase SDK — not plain REST. They require an authenticated Firebase user session.
+
+ℹ
+Call these via the Firebase JS SDK: httpsCallable(functions, 'functionName')(payload). They enforce Firebase Auth internally — no API key needed, but the user must be signed in.
+
+

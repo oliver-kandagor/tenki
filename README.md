@@ -1,56 +1,91 @@
-# Welcome to your Expo app 👋
+# Tenki — WeatherAI Mobile (MVP)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native (Expo SDK 56) app for the WeatherAI technical assignment. It consumes the [WeatherAI REST API](https://api.weather-ai.co) for weather, tree canopy analysis, and usage quotas.
 
-## Get started
+## Prerequisites
 
-1. Install dependencies
+- Node.js 20+
+- [Expo Go](https://expo.dev/go) or a development build on a physical Android device (recommended for GPS and camera)
+- A WeatherAI API key (`wai_…`) from [weather-ai.co](https://weather-ai.co)
+
+## Setup
+
+1. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Configure your API key:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and set:
+
+   ```
+   EXPO_PUBLIC_WEATHER_AI_API_KEY=wai_your_key_here
+   ```
+
+   The key is loaded at build time via Expo’s `EXPO_PUBLIC_` env vars and is **not** committed to git.
+
+3. Start the dev server:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Open on Android (scan QR with Expo Go) or press `a` for an emulator.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Features (Phase 1 MVP)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| Tab | Description |
+|-----|-------------|
+| **Home** | Current weather + AI summary (10 min cache) |
+| **Forecast** | 7-day daily + 24h hourly scroll; metric/imperial toggle |
+| **Trees** | Image upload (camera/gallery) → `/v1/trees/analyze`; history stack |
+| **Lab** | 12 experimental API ideas — star favorites, run live, see product pitches |
+| **Usage** | Standard / AI / tree analysis quotas |
 
-## Get a fresh project
+Location: GPS via `expo-location`, with IP fallback (`/v1/weather-geo?ip=auto`) when permission is denied.
 
-When you're ready, run:
+## Project structure
 
-```bash
-npm run reset-project
+```
+src/
+├── api/           # Axios client + WeatherAI endpoints
+├── store/         # Zustand (weather, trees, location)
+├── screens/       # Home, Forecast, Trees, History, Usage
+├── components/    # Cards, rows, quota bars
+├── hooks/         # useLocation, useWeather
+├── navigation/    # Bottom tabs + Trees stack
+└── utils/         # TTL cache, units, weather emoji map
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## API Lab (pick what to ship)
 
-### Other setup steps
+Open the **Lab** tab to try creative prototypes built on WeatherAI endpoints:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- **Free / no AI:** Rain Window, Golden Hour, Forecast alias check
+- **Free + AI:** Week at a Glance, Travel Mode, Swahili brief, Twin Cities, Farm Morning Brief
+- **Pro (403 on Free):** Insights, 14-day forecast, IP lookup, Webhooks
 
-## Learn more
+Star ★ features you like — shortlist is saved locally so you can decide what becomes a real screen.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Tips
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Free plan: 1,000 req/mo, 200 AI req/mo, 5 tree analyses/mo. Use `?ai=false` in development where possible (forecast endpoints already skip AI).
+- Tree analysis uses real quota — test uploads sparingly.
 
-## Join the community
+## Android APK (submission)
 
-Join our community of developers creating universal apps.
+```bash
+npx eas build --platform android --profile preview
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Or follow [Expo’s Android build docs](https://docs.expo.dev/build/setup/).
+
+## License
+
+See [LICENSE](LICENSE).

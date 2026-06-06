@@ -1,0 +1,44 @@
+App.tsx(1,8): error TS2882: Cannot find module or type declarations for side-effect import of './global.css'.
+src/components/screens/weather/days-card/index.tsx(42,13): error TS2322: Type '{ source: any; alt: string; contentFit: string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+  Property 'contentFit' does not exist on type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+src/components/screens/weather/forecast-card/index.tsx(24,11): error TS2322: Type '{ source: any; alt: string; className: string; contentFit: string; }' is not assignable to type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+  Property 'contentFit' does not exist on type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+src/components/shared/custom-header/index.tsx(68,17): error TS2322: Type '{ source: any; alt: string; contentFit: string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+  Property 'contentFit' does not exist on type 'IntrinsicAttributes & Omit<VariantProps<TVReturnType<UNION<{ size: { '2xs': string; xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; full: string; none: string; }; }, {} | { size: { ...; }; }>, ... 5 more ..., TVReturnType<...>>> & IImageProps & Omit<...> & RefAttributes<...> & { ...; }, "r...'.
+src/components/ui/AppScreen.tsx(63,40): error TS2322: Type '0 | { backgroundColor: string; } | undefined' is not assignable to type 'Falsy | ViewStyle | RecursiveArray<Falsy | ViewStyle> | readonly (Falsy | ViewStyle)[]'.
+  Type '0' is not assignable to type 'Falsy | ViewStyle | RecursiveArray<Falsy | ViewStyle> | readonly (Falsy | ViewStyle)[]'.
+src/components/ui/bottomsheet/index.tsx(51,21): error TS2322: Type 'null' is not assignable to type 'BottomSheetMethods'.
+src/components/ui/bottomsheet/index.tsx(88,9): error TS2322: Type 'RefObject<BottomSheetMethods | null>' is not assignable to type 'RefObject<BottomSheetMethods>'.
+  Type 'BottomSheetMethods | null' is not assignable to type 'BottomSheetMethods'.
+    Type 'null' is not assignable to type 'BottomSheetMethods'.
+src/components/ui/gluestack-ui-provider/index.tsx(15,5): error TS2322: Type 'ColorSchemeName' is not assignable to type '"light" | "dark"'.
+  Type '"unspecified"' is not assignable to type '"light" | "dark"'.
+src/components/ui/MetricTile.tsx(21,11): error TS2322: Type '(ViewStyle | { flex: number; minHeight: number; aspectRatio: number; justifyContent: "space-between"; } | undefined)[]' is not assignable to type 'ViewStyle'.
+  Types of property 'filter' are incompatible.
+    Type '{ <S extends ViewStyle | { flex: number; minHeight: number; aspectRatio: number; justifyContent: "space-between"; } | undefined>(predicate: (value: ViewStyle | { flex: number; minHeight: number; aspectRatio: number; justifyContent: "space-between"; } | undefined, index: number, array: (ViewStyle | ... 1 more ... | u...' is not assignable to type 'string | readonly FilterFunction[] | undefined'.
+src/components/ui/Skeleton.tsx(53,9): error TS2322: Type '{ width: string | number; height: string | number; borderRadius: number; opacity: number | Animated.AnimatedInterpolation<string | number>; }' is not assignable to type 'false | "" | Value | AnimatedInterpolation<string | number> | WithAnimatedObject<ViewStyle> | WithAnimatedArray<Falsy | ViewStyle | RecursiveArray<...> | readonly (Falsy | ViewStyle)[]> | readonly (false | ... 5 more ... | undefined)[] | null | undefined'.
+  Types of property 'width' are incompatible.
+    Type 'string | number' is not assignable to type 'number | "auto" | `${number}%` | Value | AnimatedInterpolation<string | number> | WithAnimatedObject<AnimatedNode> | null | undefined'.
+      Type 'string' is not assignable to type 'number | "auto" | `${number}%` | Value | AnimatedInterpolation<string | number> | WithAnimatedObject<AnimatedNode> | null | undefined'.
+src/screens/migrated/_layout.tsx(2,22): error TS2307: Cannot find module 'expo-router' or its corresponding type declarations.
+src/screens/onboarding/LocationsScreen.tsx(236,50): error TS2339: Property 'isDefault' does not exist on type 'SavedLocation | { id: string; name: string; }'.
+  Property 'isDefault' does not exist on type '{ id: string; name: string; }'.
+src/screens/onboarding/LocationsScreen.tsx(241,41): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<"tree" | "home" | "work" | "pin" | "beach" | "farm" | "golf" | "run", SFSymbols7_0 | { ios?: SFSymbols7_0 | undefined; android?: "function" | "article" | ... 4053 more ... | undefined; web?: "function" | ... 4054 more ... | undefined; }>'.
+src/screens/onboarding/LocationsScreen.tsx(241,59): error TS2339: Property 'icon' does not exist on type 'SavedLocation | { id: string; name: string; }'.
+  Property 'icon' does not exist on type '{ id: string; name: string; }'.
+src/screens/TodayScreen.tsx(89,48): error TS2339: Property 'pressure' does not exist on type 'CurrentConditions'.
+src/screens/TodayScreen.tsx(92,70): error TS2339: Property 'precipitation_chance' does not exist on type 'HourlyForecast'.
+src/screens/TodayScreen.tsx(98,29): error TS2345: Argument of type 'CurrentConditions' is not assignable to parameter of type 'CurrentWeather'.
+  Type 'CurrentConditions' is missing the following properties from type 'CurrentWeather': location, current, aiSummary
+src/screens/TodayScreen.tsx(114,9): error TS2322: Type '{ title: string; value: string; style: { marginBottom: 20; }; }' is not assignable to type 'IntrinsicAttributes & InsightRowProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & InsightRowProps'.
+src/screens/TodayScreen.tsx(134,43): error TS2339: Property 'wind_direction' does not exist on type 'CurrentConditions'.
+src/screens/TodayScreen.tsx(157,28): error TS2322: Type '{ hourly: HourlyForecast; }' is not assignable to type 'IntrinsicAttributes & HourlyRowProps'.
+  Property 'hourly' does not exist on type 'IntrinsicAttributes & HourlyRowProps'. Did you mean 'hour'?
+src/screens/TodayScreen.tsx(184,38): error TS2339: Property 'sunrise' does not exist on type 'CurrentConditions'.
+src/screens/TodayScreen.tsx(185,37): error TS2339: Property 'sunset' does not exist on type 'CurrentConditions'.
+src/screens/TodayScreen.tsx(196,23): error TS2339: Property 'precipitation_chance' does not exist on type 'HourlyForecast'.
+src/utils/heroImageMap.ts(84,33): error TS2339: Property 'weather_code' does not exist on type 'CurrentWeather'.
+src/utils/heroImageMap.ts(84,57): error TS2339: Property 'code' does not exist on type 'CurrentWeather'.
+src/utils/heroImageMap.ts(95,33): error TS2339: Property 'weather_code' does not exist on type 'CurrentWeather'.
+src/utils/heroImageMap.ts(95,57): error TS2339: Property 'code' does not exist on type 'CurrentWeather'.

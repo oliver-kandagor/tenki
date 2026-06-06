@@ -20,11 +20,23 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Tenki to use your location for local weather forecasts."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Tenki to access photos for tree canopy analysis.",
+          "cameraPermission": "Allow Tenki to use the camera for tree canopy analysis."
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -37,7 +49,6 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
       "reactCompiler": true
     }
   }
