@@ -281,11 +281,38 @@ tenki/
 
 The app features a modern dark theme with a card-based layout and personalized weather insights:
 
-| Screen | Description |
-|--------|-------------|
-| **Today** | Main dashboard showing current weather status ("Grab your umbrella!", outdoor readiness), best window for outdoor activities, and 4-tile metric layout (wind speed, rain chance, pressure, UV index). Also displays hourly forecast and sunrise/sunset times. |
-| **Forecast** | Calendar view of June with daily forecasts, daily high/low temperature graph, hourly breakdown, and rain probability timeline. Swipe between months for extended forecast. |
-| **Alerts** | Customizable weather reminders with toggle switches for rain, heavy rain/floods, strong wind, cold mornings, and dry window notifications. Each reminder shows configurable lead time. |
-| **Farm & Trees** | Tree canopy analysis interface for forestry tracking. Upload farm images via camera or gallery with optional fields (Farmer ID, County, Notes). Displays tree count, canopy coverage %, health breakdown, and AI observations. |
-| **Settings & Usage** | Account information (plan type, reset date), API quota dashboard (standard requests, AI summaries, tree analyses), and theme preferences. Shows real-time usage tracking. |
-| **API Lab** | Developer sandbox for experimenting with WeatherAI endpoints. Features pre-built use cases like "Week at a Glance", "Travel Mode (IP)", "Rain Window", and "Golden Hour Pick" with cost indicators. |
+### Today Screen
+Main dashboard showing current weather status ("Grab your umbrella!"), best window for outdoor activities, and 4-tile metric layout (wind speed, rain chance, pressure, UV index). Also displays hourly forecast and sunrise/sunset times.
+
+<div style="display: flex; gap: 10px;">
+  <img src="./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.07.46.png" width="250" alt="Today screen">
+  <img src="./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.46.png" width="250" alt="Today screen with forecast">
+</div>
+
+### Alerts Screen
+Customizable weather reminders with toggle switches for rain, heavy rain/floods, strong wind, cold mornings, and dry window notifications. Each reminder shows configurable lead time.
+
+![Alerts Screen](./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.09.png)
+
+### Forecast Screen
+Calendar view with daily forecasts, daily high/low temperature graph, hourly breakdown, and rain probability timeline. Swipe between months for extended forecast.
+
+<div style="display: flex; gap: 10px;">
+  <img src="./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.04.png" width="250" alt="Forecast calendar">
+  <img src="./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.52.png" width="250" alt="Forecast details">
+</div>
+
+### Farm & Trees Screen
+Tree canopy analysis interface for forestry tracking. Upload farm images via camera or gallery with optional fields (Farmer ID, County, Notes). Displays tree count, canopy coverage %, health breakdown, and AI observations.
+
+![Farm & Trees Screen](./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.13.png)
+
+### Settings & Usage Screen
+Account information (plan type, reset date), API quota dashboard (standard requests, AI summaries, tree analyses), and theme preferences. Shows real-time usage tracking.
+
+![Settings & Usage Screen](./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.33.png)
+
+### API Lab Screen
+Developer sandbox for experimenting with WeatherAI endpoints. Features pre-built use cases like "Week at a Glance", "Travel Mode (IP)", "Rain Window", and "Golden Hour Pick" with cost indicators.
+
+![API Lab Screen](./assets/Screenshot%20/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20Max%20-%202026-06-06%20at%2015.09.40.png)
