@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView } from '@/components/ui/SymbolView';
 
 import { Card } from '@/components/ui/Card';
 import { type } from '@/theme/typography';

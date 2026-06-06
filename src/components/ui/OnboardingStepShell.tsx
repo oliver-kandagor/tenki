@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import Animated, { FadeIn, SlideInRight } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView } from '@/components/ui/SymbolView';
 
 import { OnboardingBackground } from '@/components/ui/OnboardingBackground';
 import { SegmentedProgress } from '@/components/ui/SegmentedProgress';

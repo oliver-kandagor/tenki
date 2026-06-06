@@ -1,11 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SymbolView, type SymbolViewProps } from 'expo-symbols';
+import { SymbolView } from '@/components/ui/SymbolView';
 
 import { LOCATION_ICON_PRESETS, type LocationIconId } from '@/constants/onboarding';
 import { type } from '@/theme/typography';
 import { colors, radius, space } from '@/theme/tokens';
 
-export const ICON_SYMBOLS: Record<LocationIconId, SymbolViewProps['name']> = {
+export const ICON_SYMBOLS: Record<LocationIconId, string> = {
   home: 'house.fill',
   work: 'briefcase.fill',
   pin: 'mappin.and.ellipse',

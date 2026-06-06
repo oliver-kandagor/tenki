@@ -8,7 +8,7 @@ import type { OnboardingStackParamList } from '@/navigation/types';
 import { useOnboardingStore } from '@/store/onboardingStore';
 import { type } from '@/theme/typography';
 import { colors, radius, space } from '@/theme/tokens';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView } from '@/components/ui/SymbolView';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'Plan'>;
 

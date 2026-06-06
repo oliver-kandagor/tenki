@@ -23,7 +23,12 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.kanda254.tenki"
+      "package": "com.kanda254.tenki",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDUMMY_KEY_FOR_MAPS_NOT_REAL_KEY_123"
+        }
+      }
     },
     "web": {
       "output": "single",
